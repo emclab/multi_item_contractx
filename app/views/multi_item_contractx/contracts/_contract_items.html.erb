@@ -1,0 +1,15 @@
+<% if @view_in_config && @erb_code %>
+  <%= render inline: @erb_code_field %>
+  
+<% else %>
+
+<div class="fields">
+  <%= f.input :contract_item_id, :label => t('Order'), :required => true, :collection => return_contract_item.where("order_date > ?", 3.months.ago).
+        where("id != ?", MultiItemContractx::ContractItem.where('created_at > ?', 3.months.ago).select('contract_item_id') - (@contract.contract_items.present? ? @contract.contract_items.select('contract_item_id') : [])), 
+        :label_method => lambda {|r| "#{r.id}, #{r.order_date.strftime('%Y/%m/%d')},#{MultiItemContract.customer_class.find_by_id(r.customer_id).short_name}}, #{AdResourcex::Resource.find_by_id(r.resource_id).name}"}, 
+                           :value_method => :id,  :include_blank => true  %>
+  <%= link_to_remove_fields t("Delete"), f %>
+  
+</div>
+
+<% end %>

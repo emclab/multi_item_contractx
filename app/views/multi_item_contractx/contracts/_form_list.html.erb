@@ -1,0 +1,59 @@
+<% if @view_in_config && @erb_code %>
+  <%= render inline: ERB.new(@erb_code).result(binding) %>
+  
+<% else %>
+<div id="main_body">
+<div class="pagination"><%= will_paginate models %></div>	
+<h4><%=t(@title)%></h4>
+<table class="table table-striped">
+  <tr>
+    <th>#</th>
+    <th><%=t('Customer') %></th> 
+    <th><%=t('Contract Num') %></th> 
+    <th><%=t('Contract Total($)') %></th>
+    <th><%=t('Payment Term') %></th>
+    <th><%=t('Paid Out') %></th>     
+    <th><%=t('Signed') %></th>
+    <th><%=t('Sign Date') %></th>
+    <th><%=t('Void') %></th>
+    <th><%=t('Sales') %></th>
+    <th></th>
+    
+  </tr>
+
+<% models.each do |r| %>
+  <tr>
+  	<% if has_action_right?('show', params[:controller], r)%>
+  	  <td><%= link_to r.id.to_s, SUBURI + "/authentify/view_handler?index=1&url=#{CGI::escape contract_path(r)}" %></td>
+  	<% else %>
+  	  <td><%= r.id %></td>
+  	<% end %>
+  	<td><%= r.contract_date.strftime("%Y/%m/%d") if r.contract_date.present? %></td>
+  	<td><%= prt(r, 'customer.name')%></td>
+    <td><%= prt(r, :contract_num)%></td>
+  	<td><%= number_with_precision(prt(r, :contract_total), :precision => 2) %></td>
+  	<td><%= prt(r, :payment_term) %></td> 	
+  	<td><%= r.paid_out ? t('Yes') : t('No') %></td> 
+  	<td><%= r.signed ? t('Yes') : t('No') %></td> 
+  	<td><%= r.sign_date.strftime("%Y/%m/%d") if r.sign_date.present? %></td> 	           
+    <td><%= r.void ? t('Yes') : t('No') %></td>
+    <td><%= prt(r, 'sales.name') if r.sales_id.present? %></td>  
+    <td><%= link_to t('Edit'), SUBURI + "/authentify/view_handler?index=1&url=#{CGI::escape(edit_contract_path(r))}", :class => BUTTONS_CLS['action']  if has_action_right?('update', params[:controller], r) %> </td>
+
+  </tr>
+<% end %>
+
+</table>
+
+	<table class="table table-striped">
+	  <tr>
+	    <th>
+  			<%= link_to t('Back'), SUBURI + "/authentify/view_handler?index=0", :class => BUTTONS_CLS['action'] %>
+  			&nbsp;&nbsp;&nbsp;
+  			<%= link_to t('New Contract'), SUBURI + "/authentify/view_handler?index=1&url=#{CGI::escape(new_contract_path())}", :class => BUTTONS_CLS['action'] if has_action_right?('create', params[:controller]) %>
+        </th>
+	  </tr>
+	</table> 
+</div>
+
+<% end %>

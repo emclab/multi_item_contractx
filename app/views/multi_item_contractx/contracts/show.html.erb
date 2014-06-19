@@ -1,0 +1,81 @@
+<% if @view_in_config && @erb_code %>
+  <%= render inline: ERB.new(@erb_code).result(binding) %>
+  
+<% else %>
+<div id='main_body'>
+
+<h4><%=@title %> </h4>
+
+<p>
+  <b><%=t('Customer')%></b>
+  <%= @contract.customer.name %>
+</p>  
+<p>
+  <b><%=t('Contract Date')%></b>
+  <%= @contract.contract_date.strftime("%Y/%m/%d") %>
+</p> 
+<p>
+  <b><%=t('Sales')%></b>
+  <%= @contract.sales.name if @contract.sales_id.present? %>
+</p>
+<p>
+  <b><%=t('Contract#')%></b>
+  <%= @contract.contract_num %>
+</p> 
+<p>
+  <b><%=t('Contract Total($)')%></b>
+  <%= number_with_precision(@contract.contract_total, :precision => 2) %>
+</p> 
+<p>
+  <b><%=t('Payment Agreement')%></b>
+  <%= @contract.payment_agreement %>
+</p> 
+<p>
+  <b><%=t('Payment Term(day)')%></b>
+  <%= @contract.payment_term %>
+</p> 
+<p>
+  <b><%=t('Paid Out')%></b>
+  <%= @contract.paid_out ? t('Yes') : t('No') %>
+</p> 
+<p>
+  <b><%=t('Signed')%></b>
+  <%= @contract.signed ? t('Yes') : t('No') %>
+</p> 
+<p>
+  <b><%=t('Sign Date')%></b>
+  <%= @contract.sign_date.strftime("%Y/%m/%d") if @contract.sign_date.present? %>
+</p> 
+<p>
+  <b><%=t('Contract On File')%></b>
+  <%= @contract.contract_on_file ? t('Yes') : t('No') %>
+</p> 
+<p>
+  <b><%=t('Void')%></b>
+  <%= @contract.void ? t('Yes') : t('No') %>
+</p> 
+<p>
+  <b><%=t('Last Updated By')%></b>
+  <%= @contract.last_updated_by.name if @contract.last_updated_by_id.present? %>
+</p>
+<p>
+  <b>LOG</b>
+  <% Commonx::Log.where('resource_id = ? AND resource_name = ?', @contract.id, params[:controller].sub('/', '_')).order("created_at DESC").each do |t| %>
+    <li><%= t.created_at.strftime("%Y/%m/%d") %>,&nbsp; <%= t.last_updated_by.name %>,&nbsp; <%= t.log %> </li>
+  <% end %>
+</p>
+
+<table class="table table-striped">
+  <tr>
+    <th>
+    	<%= link_to t('Back'), SUBURI + "/authentify/view_handler?index=0", :id => 'close', :class => BUTTONS_CLS['action'] %>
+    	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    	<%= link_to t('New Log'), SUBURI + commonx.new_log_path(:resource_id => @contract.id, :resource_name => params[:controller], :subaction => 'multi_item_contract', :format => :js), :remote => true, 
+                          :id => 'new_log_link', :class => BUTTONS_CLS['action'] if has_action_right?('create_multi_item_contract', 'commonx/logs') %>    	
+    </th>
+  </tr>
+</table>
+
+</div>
+
+<% end %>
