@@ -12,6 +12,11 @@ module MultiItemContractx
       p.should_not be_valid
     end
     
+    it "should reject nil name" do
+      p = FactoryGirl.build(:multi_item_contractx_contract, :name => nil)
+      p.should_not be_valid
+    end
+    
     it "should reject 0 contract total" do
       p = FactoryGirl.build(:multi_item_contractx_contract, :contract_total => 0)
       p.should_not be_valid

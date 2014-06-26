@@ -2,6 +2,7 @@
 
 FactoryGirl.define do
   factory :multi_item_contractx_contract, :class => 'MultiItemContractx::Contract' do
+    name 'a contract'
     customer_id 1
     contract_total "9.99"
     other_charge "9.99"

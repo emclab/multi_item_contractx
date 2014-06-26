@@ -53,6 +53,7 @@ zh-CN:
   'Project#' : '项目#'
   Date                  : '日期'  
   Contract              : '合同'
+  Contract Name             : '合同名称'
   Sales                 : '业务员'  
   Create Date           : '生成日期'
   Created At           : '生成日期'

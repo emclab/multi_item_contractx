@@ -9,7 +9,7 @@
   <tr>
     <th>#</th>
     <th><%=t('Customer') %></th> 
-    <th><%=t('Contract Num') %></th> 
+    <th><%=t('Contract Name') %></th> 
     <th><%=t('Contract Total($)') %></th>
     <th><%=t('Payment Term') %></th>
     <th><%=t('Paid Out') %></th>     
@@ -29,7 +29,7 @@
   	  <td><%= r.id %></td>
   	<% end %>
   	<td><%= r.contract_date.strftime("%Y/%m/%d") if r.contract_date.present? %></td>
-  	<td><%= prt(r, 'customer.name')%></td>
+  	<td><%= prt(r, :name)%></td>
     <td><%= prt(r, :contract_num)%></td>
   	<td><%= number_with_precision(prt(r, :contract_total), :precision => 2) %></td>
   	<td><%= prt(r, :payment_term) %></td> 	

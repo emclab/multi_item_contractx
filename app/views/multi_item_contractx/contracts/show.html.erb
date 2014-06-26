@@ -9,7 +9,11 @@
 <p>
   <b><%=t('Customer')%></b>
   <%= @contract.customer.name %>
-</p>  
+</p> 
+<p>
+  <b><%=t('Contract Name')%></b>
+  <%= @contract.name %>
+</p>   
 <p>
   <b><%=t('Contract Date')%></b>
   <%= @contract.contract_date.strftime("%Y/%m/%d") %>

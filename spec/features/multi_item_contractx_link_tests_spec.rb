@@ -52,7 +52,7 @@ describe "LinkTests" do
       visit '/'
       #save_and_open_page
       fill_in "login", :with => @u.login
-      fill_in "password", :with => 'password'
+      fill_in "password", :with => @u.password
       click_button 'Login'
     end
     
@@ -86,6 +86,7 @@ describe "LinkTests" do
       page.should have_content('New Contract')
       select('customer1', :from => 'contract_customer_id')
       select('Test User', :from => 'contract_sales_id')
+      fill_in 'contract_name', :with => 'a new contract'
       fill_in 'contract_contract_total', :with => 231
       fill_in 'contract_contract_date', :with => Date.today
       click_button 'Save'
@@ -96,6 +97,7 @@ describe "LinkTests" do
       visit contracts_path()
       click_link('New Contract')
       page.should have_content('New Contract')
+      fill_in 'contract_name', :with => 'a new contract - 2'
       select('customer1', :from => 'contract_customer_id')
       select('Test User', :from => 'contract_sales_id')
       fill_in 'contract_contract_total', :with => 230000

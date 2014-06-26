@@ -1,6 +1,7 @@
 class CreateMultiItemContractxContracts < ActiveRecord::Migration
   def change
     create_table :multi_item_contractx_contracts do |t|
+      t.string :name
       t.integer :customer_id
       t.decimal :contract_total, :precision => 10, :scale => 2
       t.decimal :tax, :precision => 10, :scale => 2
@@ -22,7 +23,7 @@ class CreateMultiItemContractxContracts < ActiveRecord::Migration
       t.string :wf_state
       t.integer :category_id
       t.string :customer_po
-
+      
       t.timestamps
     end
     
@@ -34,5 +35,6 @@ class CreateMultiItemContractxContracts < ActiveRecord::Migration
     add_index :multi_item_contractx_contracts, :wf_state
     add_index :multi_item_contractx_contracts, :category_id
     add_index :multi_item_contractx_contracts, :customer_po
+    add_index :multi_item_contractx_contracts, :name
   end
 end
