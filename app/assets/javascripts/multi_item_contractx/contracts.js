@@ -18,3 +18,10 @@ $(function() {
 	$( "#contract_start_date_s" ).datepicker({dateFormat: 'yy-mm-dd'});
 	$( "#contract_end_date_s" ).datepicker({dateFormat: 'yy-mm-dd'});
 });
+
+$(function() {
+  $('#contract_customer_id').change(function (){
+    $.get(window.location, $('form').serialize(), null, "script");
+    return false;
+  });
+});

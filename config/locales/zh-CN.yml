@@ -93,3 +93,6 @@ zh-CN:
   Void : '作废无效'
   Contract Info : '合同内容'
   Sales : '业务员'
+  Customer Payments : '客户付款'
+  Payment Schedules : '付款节点'
+  Contract Orders : '合同订单'

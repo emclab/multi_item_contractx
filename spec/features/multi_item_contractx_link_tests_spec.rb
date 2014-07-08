@@ -22,6 +22,9 @@ describe "LinkTests" do
          'mini-link'    => mini_btn +  'btn btn-link'
         }
     before(:each) do
+      piece_code = "@contract_item = return_contract_item
+                    @contract_item = @contract_item.where('ad_resource_orderx_orders.customer_id = ?', @contract.customer_id) if @contract_item && @contract && @contract.customer_id.present?"
+      FactoryGirl.create(:engine_config, :engine_name => 'multi_item_contractx', :engine_version => nil, :argument_name => 'contract_ajax_callback', :argument_value => piece_code)
       @pagination_config = FactoryGirl.create(:engine_config, :engine_name => nil, :engine_version => nil, :argument_name => 'pagination', :argument_value => 30)
       z = FactoryGirl.create(:zone, :zone_name => 'hq')
       type = FactoryGirl.create(:group_type, :name => 'employee')

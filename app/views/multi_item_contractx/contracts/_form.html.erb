@@ -5,7 +5,7 @@
 <%= simple_form_for(@contract) do |f| %>    
  
   <%= f.input :contract_date, :label => t('Contract Date'), :as => :string %> 
-  <%= f.input :name, :label => t('Contract name') %> 
+  <%= f.input :name, :label => t('Contract Name') %> 
   <%= f.input :customer_name_autocomplete, :input_html => { data: {autocomplete_source: kustomerx.autocomplete_customers_path}}, :placeholder => t("Enter keyword"), :label => t("Customer") if @customer.blank? %>
   <%= f.input :contract_num, :label => t('Contract#'), :readonly => readonly?(@contract, 'contract_num') %>
   <%= f.input :contract_info, :label => t('Contract Info'), :input_html => {:rows => 4}, :readonly => readonly?(@contract, 'contract_info') %>
