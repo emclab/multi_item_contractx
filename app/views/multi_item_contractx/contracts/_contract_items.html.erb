@@ -4,10 +4,15 @@
 <% else %>
 
 <div class="fields">
-  <%= f.input :contract_item_id, :label => t('Order'), :required => true, :collection => @contract_item.where("order_date > ?", 3.months.ago).
-        where("id != ?", MultiItemContractx::ContractItem.where('created_at > ?', 3.months.ago).select('contract_item_id') - (@contract.contract_items.present? ? @contract.contract_items.select('contract_item_id') : [])), 
-        :label_method => lambda {|r| "#{r.id}, #{r.order_date.strftime('%Y/%m/%d')},#{MultiItemContract.customer_class.find_by_id(r.customer_id).short_name}}, #{AdResourcex::Resource.find_by_id(r.resource_id).name}"}, 
-                           :value_method => :id,  :include_blank => true  %>
+  <% ids_array = MultiItemContractx::ContractItem.select('contract_item_id') - (@contract.contract_items.present? ? @contract.contract_items.select('contract_item_id') : []) %>
+  <% @contract_item = @contract_item.where(customer_id: @customer.id) if @customer %>
+  <%= f.input :contract_item_id, :label => t('Order'), :required => true, :collection => @contract_item.where('gm_approved = ?', true).
+        where("id NOT IN", ids_array),
+        :label_method => lambda {|r| "##{r.id}, #{r.order_date.strftime('%Y/%m/%d')},#{MultiItemContractx.customer_class.find_by_id(r.customer_id).short_name}, #{r.order_total}, #{AdResourcex::Resource.find_by_id(r.resource_id).name}"},
+                           :value_method => :id,  :include_blank => true if ids_array.present? %>
+  <%= f.input :contract_item_id, :label => t('Order'), :required => true, :collection => @contract_item.where('gm_approved = ?', true),
+              :label_method => lambda {|r| "##{r.id}, #{r.order_date.strftime('%Y/%m/%d')},#{MultiItemContractx.customer_class.find_by_id(r.customer_id).short_name}, #{r.order_total}, #{AdResourcex::Resource.find_by_id(r.resource_id).name}"},
+              :value_method => :id,  :include_blank => true if ids_array.blank? %>
   <%= link_to_remove_fields t("Delete"), f %>
   
 </div>
