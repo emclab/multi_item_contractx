@@ -14,6 +14,11 @@
   <%= f.input :payment_agreement, :label => t('Payment Agreement'), :input_html => {:rows => 4}, :readonly => readonly?(@contract, 'payment_agreement') %>   
   <%= f.input :payment_term, :label => t('Payment Term(day)'), :collection => [0,10,15,30,45,60,90,120] unless readonly?(@contract, 'payment_term') %>
   <%= f.input :payment_term, :label => t('Payment Term(day)'), :readonly => true, :input_html => {:value => @contract.payment_term} if readonly?(@contract, 'payment_term') %>
+  <%=t('Contract Items')%>: 
+  <%= f.fields_for :contract_items, @contract.contract_items do |builder| %>
+    <p><%= render('contract_items', :f => builder)%></p>  
+  <% end %>     
+  <p><%= link_to_add_fields t("Add Contract Item"), f, :contract_items %></p>
   <%= f.input :contract_on_file_noupdate, :label => t('Contract On File?'), :readonly => true, :input_html => {:value => (@contract.contract_on_file ? t('Yes') : t('No'))} if readonly?(@contract, 'contract_on_file')%>
   <%= f.input :contract_on_file, :label => t('Contract On File?'), :as => :boolean unless readonly?(@contract, 'contract_on_file')%>
   <%= f.input :paid_out_noupdate, :label => t('Paid Out'), :readonly => true, :input_html => {:value => (@contract.paid_out ? t('Yes') : t('No'))} if readonly?(@contract, 'contract_on_file') %>

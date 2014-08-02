@@ -31,13 +31,14 @@
   	<td><%= r.contract_date.strftime("%Y/%m/%d") if r.contract_date.present? %></td>
   	<td><%= prt(r, :name)%></td>
     <td><%= prt(r, :contract_num)%></td>
-  	<td><%= number_with_precision(prt(r, :contract_total), :precision => 2) %></td>
+  	<td><%= prt(r, :contract_total) %></td>
   	<td><%= prt(r, :payment_term) %></td> 	
   	<td><%= r.paid_out ? t('Yes') : t('No') %></td> 
   	<td><%= r.signed ? t('Yes') : t('No') %></td> 
   	<td><%= r.sign_date.strftime("%Y/%m/%d") if r.sign_date.present? %></td> 	           
     <td><%= r.void ? t('Yes') : t('No') %></td>
     <td><%= prt(r, 'sales.name') if r.sales_id.present? %></td>  
+    <td><%= link_to t('Customer Payments'), SUBURI + "/authentify/view_handler?index=1&url=#{SUBURI + CGI::escape(in_paymentx.payments_path(contract_id: r.id))}", :class => BUTTONS_CLS['action']  if has_action_right?('index', 'in_paymentx_payments') %> </td> 
     <td><%= link_to t('Edit'), SUBURI + "/authentify/view_handler?index=1&url=#{CGI::escape(edit_contract_path(r))}", :class => BUTTONS_CLS['action']  if has_action_right?('update', params[:controller], r) %> </td>
 
   </tr>

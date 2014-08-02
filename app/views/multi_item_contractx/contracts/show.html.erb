@@ -31,6 +31,14 @@
   <%= number_with_precision(@contract.contract_total, :precision => 2) %>
 </p> 
 <p>
+  <b><%=t('Contract Items')%>:</b>
+  <ul>
+  <% @contract.contract_items.order("order_date DESC").each do |c| %>
+   <li><%= c.contract_item.order_date.strftime("%Y/%m/%d")%>&nbsp;#<%= c.contract_item.id %>&nbsp;<%=t('$')%><%=c.contract_item.order_total %></li>
+  <% end %>
+  </ul>
+</p>
+<p>
   <b><%=t('Payment Agreement')%></b>
   <%= @contract.payment_agreement %>
 </p> 

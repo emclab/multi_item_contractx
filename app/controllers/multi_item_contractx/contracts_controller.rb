@@ -18,8 +18,8 @@ module MultiItemContractx
     def new
       @title = 'New Contract'
       @contract = MultiItemContractx::Contract.new
-      #@contract.contract_items.build
-      eval(@piece_code) if @piece_code
+      #eval(@piece_code) if @piece_code
+      @contract_item = return_contract_item
       @erb_code = find_config_const('contract_new_view', 'multi_item_contractx')
       @erb_code_field = find_config_const('contract_new_view_field', 'multi_item_contractx')
     end
@@ -30,7 +30,8 @@ module MultiItemContractx
       if @contract.save
         redirect_to URI.escape(SUBURI + "/authentify/view_handler?index=0&msg=Successfully Saved!")
       else
-        eval(@piece_code) if @piece_code
+        #eval(@piece_code) if @piece_code
+        @contract_item = return_contract_item
         @erb_code = find_config_const('contract_new_view', 'multi_item_contractx')
         flash.now[:error] = t('Data Error. Not Saved!')
         render 'new'
@@ -40,7 +41,8 @@ module MultiItemContractx
     def edit
       @title = 'Edit Contract'
       @contract = MultiItemContractx::Contract.find_by_id(params[:id])
-      eval(@piece_code) if @piece_code
+      #eval(@piece_code) if @piece_code
+      @contract_item = return_contract_item
       @erb_code = find_config_const('contract_edit_view', 'multi_item_contractx')
       @erb_code_field = find_config_const('contract_new_view_field', 'multi_item_contractx')
     end
@@ -51,7 +53,8 @@ module MultiItemContractx
       if @contract.update_attributes(params[:contract], :as => :role_update)
         redirect_to URI.escape(SUBURI + "/authentify/view_handler?index=0&msg=Successfully Updated!")
       else
-        eval(@piece_code) if @piece_code
+        #eval(@piece_code) if @piece_code
+        @contract_item = return_contract_item
         @erb_code = find_config_const('contract_edit_view', 'multi_item_contractx')
         flash.now[:error] = t('Data Error. Not Updated!')
         render 'edit'

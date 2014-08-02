@@ -4,15 +4,12 @@
 <% else %>
 
 <div class="fields">
-  <% ids_array = MultiItemContractx::ContractItem.select('contract_item_id') - (@contract.contract_items.present? ? @contract.contract_items.select('contract_item_id') : []) %>
-  <% @contract_item = @contract_item.where(customer_id: @customer.id) if @customer %>
-  <%= f.input :contract_item_id, :label => t('Order'), :required => true, :collection => @contract_item.where('gm_approved = ?', true).
-        where("id NOT IN", ids_array),
+  <% @contract_item = @contract_item.where('ad_resource_orderx_orders.customer_id = ?', @contract.customer_id) if @contract_item && @contract && @contract.customer_id.present? %>
+  <% ids_array = @contract.contract_items.pluck('contract_item_id') + AdResourceOrderx::Order.where('customer_id = ? AND created_at > ?', @contract.customer_id, 1.year.ago).where('id NOT IN (?)', MultiItemContractx::ContractItem.where('created_at > ?', 1.year.ago).pluck('contract_item_id')).pluck('id') %>
+  <% @contract_item = @contract_item.where('gm_approved = ?', true).where('id IN (?)', ids_array) %>
+  <%= f.input :contract_item_id, :label => t('Order'), :required => true, :collection => @contract_item,
         :label_method => lambda {|r| "##{r.id}, #{r.order_date.strftime('%Y/%m/%d')},#{MultiItemContractx.customer_class.find_by_id(r.customer_id).short_name}, #{r.order_total}, #{AdResourcex::Resource.find_by_id(r.resource_id).name}"},
-                           :value_method => :id,  :include_blank => true if ids_array.present? %>
-  <%= f.input :contract_item_id, :label => t('Order'), :required => true, :collection => @contract_item.where('gm_approved = ?', true),
-              :label_method => lambda {|r| "##{r.id}, #{r.order_date.strftime('%Y/%m/%d')},#{MultiItemContractx.customer_class.find_by_id(r.customer_id).short_name}, #{r.order_total}, #{AdResourcex::Resource.find_by_id(r.resource_id).name}"},
-              :value_method => :id,  :include_blank => true if ids_array.blank? %>
+                           :value_method => :id,  :include_blank => true %>
   <%= link_to_remove_fields t("Delete"), f %>
   
 </div>
