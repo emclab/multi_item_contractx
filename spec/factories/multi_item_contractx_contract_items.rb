@@ -2,7 +2,7 @@
 
 FactoryGirl.define do
   factory :multi_item_contractx_contract_item, :class => 'MultiItemContractx::ContractItem' do
-    item_id 1
+    contract_item_id 1
     contract_id 1
   end
 end

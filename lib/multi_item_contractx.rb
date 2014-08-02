@@ -7,7 +7,7 @@ module MultiItemContractx
     @@customer_class.constantize
   end
   
-  def self.item_class
+  def self.contract_item_class
     @@contract_item_class.constantize
   end
 end

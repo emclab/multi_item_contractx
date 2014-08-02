@@ -33,8 +33,9 @@
 <p>
   <b><%=t('Contract Items')%>:</b>
   <ul>
-  <% @contract.contract_items.order("order_date DESC").each do |c| %>
-   <li><%= c.contract_item.order_date.strftime("%Y/%m/%d")%>&nbsp;#<%= c.contract_item.id %>&nbsp;<%=t('$')%><%=c.contract_item.order_total %></li>
+  <% @contract.contract_items.order("contract_item_id DESC").each do |c| %>
+   <% o = MultiItemContractx.contract_item_class.find_by_id(c.contract_item_id) %>
+   <li><%= o.order_date.strftime("%Y/%m/%d")%>&nbsp;#<%= c.contract_item.id %>&nbsp;<%=t('$')%><%=o.order_total %></li>
   <% end %>
   </ul>
 </p>

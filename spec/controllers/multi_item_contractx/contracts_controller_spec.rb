@@ -132,7 +132,7 @@ module MultiItemContractx
         response.should redirect_to URI.escape(SUBURI + "/authentify/view_handler?index=0&msg=Successfully Updated!")
       end
       
-      it "should render 'new' if data error" do
+      it "should render 'edit' if data error" do
         user_access = FactoryGirl.create(:user_access, :action => 'update', :resource => 'multi_item_contractx_contracts', :role_definition_id => @role.id, :rank => 1,
         :sql_code => "")
         session[:employee] = true
@@ -152,7 +152,9 @@ module MultiItemContractx
         session[:employee] = true
         session[:user_id] = @u.id
         session[:user_privilege] = Authentify::UserPrivilegeHelper::UserPrivilege.new(@u.id)
-        qs = FactoryGirl.create(:multi_item_contractx_contract, :customer_id => @cust.id)
+        o = FactoryGirl.create(:ad_resource_orderx_order, :customer_po => 'new new')
+        ci = FactoryGirl.create(:multi_item_contractx_contract_item, :contract_item_id => o.id)
+        qs = FactoryGirl.create(:multi_item_contractx_contract, :contract_items => [ci], :customer_id => @cust.id)
         get 'show' , {:use_route => :multi_item_contractx, :customer_id => @cust.id, :id => qs.id}
         response.should be_success
       end
