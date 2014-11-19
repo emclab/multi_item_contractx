@@ -22,9 +22,9 @@ class CreateMultiItemContractxContracts < ActiveRecord::Migration
       t.date :contract_date
       t.string :wf_state
       t.integer :category_id
-      t.string :customer_po
-      
+      t.string :customer_po      
       t.timestamps
+      t.decimal :executed_contract_total, :precision => 10, :scale => 2
     end
     
     add_index :multi_item_contractx_contracts, :customer_id
