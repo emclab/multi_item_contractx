@@ -2,6 +2,7 @@
   <%= render inline: @erb_code %>
   
 <% else %>
+<h4><%=@title %></h4>
 <%= simple_form_for(@contract) do |f| %>    
  
   <%= f.input :contract_date, :label => t('Contract Date'), :as => :string %> 

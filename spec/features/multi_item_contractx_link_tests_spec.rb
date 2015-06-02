@@ -1,6 +1,6 @@
-require 'spec_helper'
+require 'rails_helper'
 
-describe "LinkTests" do
+RSpec.describe "LinkTests", type: :request do
   describe "GET /multi_item_contractx_link_tests" do
     mini_btn = 'btn btn-mini '
     ActionView::CompiledTemplates::BUTTONS_CLS =
@@ -19,7 +19,11 @@ describe "LinkTests" do
          'inverse'      => 'btn btn-inverse',
          'mini-inverse' => mini_btn + 'btn btn-inverse',
          'link'         => 'btn btn-link',
-         'mini-link'    => mini_btn +  'btn btn-link'
+         'mini-link'    => mini_btn +  'btn btn-link',
+         'right-span#'         => '2', 
+               'left-span#'         => '6', 
+               'offset#'         => '2',
+               'form-span#'         => '4'
         }
     before(:each) do
       piece_code = "@contract_item = return_contract_item
@@ -61,32 +65,32 @@ describe "LinkTests" do
     
     it "works! (now write some real specs)" do
       qs = FactoryGirl.create(:multi_item_contractx_contract, :void => false, :last_updated_by_id => @u.id, :customer_id => @cust.id)
-      visit contracts_path
-      save_and_open_page
-      page.should have_content('Contracts')
+      visit multi_item_contractx.contracts_path
+      #save_and_open_page
+      expect(page).to have_content('Contracts')
       click_link(qs.id.to_s)
-      save_and_open_page
-      page.should have_content('Contract Info')
+      #save_and_open_page
+      expect(page).to have_content('Contract Info')
       click_link 'New Log'
-      page.should have_content('Log')
-      visit contracts_path
+      expect(page).to have_content('Log')
+      visit multi_item_contractx.contracts_path
       #save_and_open_page
       click_link('Edit')
       #save_and_open_page
-      page.should have_content('Edit Contract')
+      expect(page).to have_content('Edit Contract')
       fill_in 'contract_contract_info', :with => 'something'
       click_button 'Save'
       save_and_open_page
       #bad data
-      visit contracts_path
+      visit multi_item_contractx.contracts_path
       click_link('Edit')
       fill_in 'contract_contract_total', :with => 0
       click_button 'Save'
       save_and_open_page
       
-      visit contracts_path()
+      visit multi_item_contractx.contracts_path()
       click_link('New Contract')
-      page.should have_content('New Contract')
+      expect(page).to have_content('New Contract')
       select('customer1', :from => 'contract_customer_id')
       select('Test User', :from => 'contract_sales_id')
       fill_in 'contract_name', :with => 'a new contract'
@@ -94,12 +98,12 @@ describe "LinkTests" do
       fill_in 'contract_contract_date', :with => Date.today
       click_button 'Save'
       #save_and_open_page
-      visit contracts_path
-      page.should have_content('231')
+      visit multi_item_contractx.contracts_path
+      expect(page).to have_content('231')
       #bad data
-      visit contracts_path()
+      visit multi_item_contractx.contracts_path()
       click_link('New Contract')
-      page.should have_content('New Contract')
+      expect(page).to have_content('New Contract')
       fill_in 'contract_name', :with => 'a new contract - 2'
       select('customer1', :from => 'contract_customer_id')
       select('Test User', :from => 'contract_sales_id')
@@ -107,8 +111,8 @@ describe "LinkTests" do
       fill_in 'contract_contract_date', :with => nil
       click_button 'Save'
       #save_and_open_page
-      visit contracts_path
-      page.should_not have_content('230000')
+      visit multi_item_contractx.contracts_path
+      expect(page).not_to have_content('230000')
        
     end
   end

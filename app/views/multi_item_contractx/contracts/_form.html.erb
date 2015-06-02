@@ -2,6 +2,7 @@
   <%= render inline: @erb_code %>
   
 <% else %>
+<h4><%=@title %></h4>
 <%= simple_form_for(@contract) do |f| %>    
  
   <%= f.input :contract_date, :label => t('Contract Date'), :as => :string %> 
@@ -15,7 +16,7 @@
   <%= f.input :payment_term, :label => t('Payment Term(day)'), :collection => [0,10,15,30,45,60,90,120] unless readonly?(@contract, 'payment_term') %>
   <%= f.input :payment_term, :label => t('Payment Term(day)'), :readonly => true, :input_html => {:value => @contract.payment_term} if readonly?(@contract, 'payment_term') %>
   <%=t('Contract Items')%>: 
-  <%= f.fields_for :contract_items, @contract.contract_items do |builder| %>
+  <%= f.simple_fields_for :contract_items, @contract.contract_items do |builder| %>
     <p><%= render('contract_items', :f => builder)%></p>  
   <% end %>     
   <p><%= link_to_add_fields t("Add Contract Item"), f, :contract_items %></p>

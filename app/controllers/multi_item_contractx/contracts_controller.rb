@@ -25,7 +25,7 @@ module MultiItemContractx
     end
   
     def create
-      @contract = MultiItemContractx::Contract.new(params[:contract], :as => :role_new)
+      @contract = MultiItemContractx::Contract.new(new_params)
       @contract.last_updated_by_id = session[:user_id]
       if @contract.save
         redirect_to URI.escape(SUBURI + "/authentify/view_handler?index=0&msg=Successfully Saved!")
@@ -50,7 +50,7 @@ module MultiItemContractx
     def update
       @contract = MultiItemContractx::Contract.find_by_id(params[:id])
       @contract.last_updated_by_id = session[:user_id]
-      if @contract.update_attributes(params[:contract], :as => :role_update)
+      if @contract.update_attributes(edit_params)
         redirect_to URI.escape(SUBURI + "/authentify/view_handler?index=0&msg=Successfully Updated!")
       else
         #eval(@piece_code) if @piece_code
@@ -77,8 +77,21 @@ module MultiItemContractx
     end
     
     def return_contract_item
-      access_rights, models, has_record_access = Authentify::UserPrivilegeHelper.access_right_finder('index', MultiItemContractx.contract_item_class.to_s.underscore.pluralize, nil,nil,nil,nil, session[:user_privilege])
+      access_rights, models, has_record_access = Authentify::UserPrivilegeHelper.access_right_finder('index', MultiItemContractx.contract_item_class.to_s.underscore.pluralize, session[:user_role_ids], nil,nil,nil,nil,session[:user_id])
       return models
+    end
+    
+    private
+    def new_params
+      params.require(:contract).permit(:name, :contract_date, :contract_num, :contract_on_file, :contract_info, :contract_total, :customer_id, :customer_signed_by, :sales_id, :tax, :customer_po,
+                    :other_charge, :paid_out, :payment_agreement, :payment_term, :sign_date, :signed, :signed_by_id, :void, :wf_state, 
+                    :customer_name_autocomplete, :executed_contract_total, :contract_items_attributes => [:id, :_destroy, :contract_id, :contract_item_id])
+    end
+    
+    def edit_params
+      params.require(:contract).permit(:name, :contract_date, :contract_num, :contract_on_file, :contract_info, :contract_total, :customer_id, :customer_signed_by, :sales_id, :tax, :customer_po,
+                    :other_charge, :paid_out, :payment_agreement, :payment_term, :sign_date, :signed, :signed_by_id, :void, :wf_state, 
+                    :customer_name_autocomplete, :executed_contract_total, :contract_items_attributes => [:id, :_destroy, :contract_id, :contract_item_id])
     end
   end
 end

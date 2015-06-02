@@ -1,10 +1,11 @@
-require 'spec_helper'
+require 'rails_helper'
 
 module MultiItemContractx
-  describe ContractsController do
+  RSpec.describe ContractsController, type: :controller do
+    routes {MultiItemContractx::Engine.routes}
     before(:each) do
-      controller.should_receive(:require_signin)
-      controller.should_receive(:require_employee)
+      #expect(controller).to receive(:require_signin)
+      expect(controller).to receive(:require_employee)
     end
     before(:each) do
       piece_code = "@contract_item = return_contract_item
@@ -21,6 +22,8 @@ module MultiItemContractx
       @cust = FactoryGirl.create(:kustomerx_customer)
       @cust1 = FactoryGirl.create(:kustomerx_customer, :name => 'new', :short_name => 'new new')
       @order = FactoryGirl.create(:ad_resource_orderx_order, :order_date => Date.today)
+      
+      session[:user_role_ids] = Authentify::UserPrivilegeHelper::UserPrivilege.new(@u.id).user_role_ids
     end
       
     render_views
@@ -31,11 +34,10 @@ module MultiItemContractx
         :sql_code => "MultiItemContractx::Contract.where(:void => false).order('created_at')")
         session[:employee] = true
         session[:user_id] = @u.id
-        session[:user_privilege] = Authentify::UserPrivilegeHelper::UserPrivilege.new(@u.id)
         qs = FactoryGirl.create(:multi_item_contractx_contract, :void => false, :last_updated_by_id => @u.id, :customer_id => @cust.id, :sales_id => @u.id)
         qs1 = FactoryGirl.create(:multi_item_contractx_contract, :void => false, :last_updated_by_id => @u.id, :contract_num => nil, :sales_id => @u.id)
-        get 'index' , {:use_route => :multi_item_contractx}
-        assigns(:contracts).should =~ [qs, qs1]       
+        get 'index' 
+        expect(assigns(:contracts)).to match_array([qs, qs1])       
       end
       
       it "should return contracts for the customer" do
@@ -43,11 +45,10 @@ module MultiItemContractx
         :sql_code => "MultiItemContractx::Contract.where(:void => false).order('created_at')")
         session[:employee] = true
         session[:user_id] = @u.id
-        session[:user_privilege] = Authentify::UserPrivilegeHelper::UserPrivilege.new(@u.id)
         qs = FactoryGirl.create(:multi_item_contractx_contract, :void => false, :last_updated_by_id => @u.id, :customer_id => @cust.id, :sales_id => @u.id)
         qs1 = FactoryGirl.create(:multi_item_contractx_contract, :void => true, :last_updated_by_id => @u.id, :customer_id => @cust1.id, :contract_num => nil, :sales_id => @u.id)
-        get 'index' , {:use_route => :multi_item_contractx, :customer_id => @cust.id}
-        assigns(:contracts).should eq([qs])
+        get 'index' , {:customer_id => @cust.id}
+        expect(assigns(:contracts)).to eq([qs])
       end
       
       it "should return contracts for the sales" do
@@ -55,11 +56,10 @@ module MultiItemContractx
         :sql_code => "MultiItemContractx::Contract.where(:void => false).order('created_at')")
         session[:employee] = true
         session[:user_id] = @u.id
-        session[:user_privilege] = Authentify::UserPrivilegeHelper::UserPrivilege.new(@u.id)
         qs = FactoryGirl.create(:multi_item_contractx_contract, :void => false, :last_updated_by_id => @u.id, :customer_id => @cust.id, :sales_id => @u.id + 1)
         qs1 = FactoryGirl.create(:multi_item_contractx_contract, :void => false, :last_updated_by_id => @u.id, :contract_num => nil, :sales_id => @u.id)
-        get 'index' , {:use_route => :multi_item_contractx, :sales_id => @u.id}
-        assigns(:contracts).should eq([qs1])
+        get 'index' , {:sales_id => @u.id}
+        expect(assigns(:contracts)).to eq([qs1])
       end
     end
   
@@ -71,9 +71,8 @@ module MultiItemContractx
         :sql_code => "")
         session[:employee] = true
         session[:user_id] = @u.id
-        session[:user_privilege] = Authentify::UserPrivilegeHelper::UserPrivilege.new(@u.id)
-        get 'new' , {:use_route => :multi_item_contractx, :customer_id => @cust.id}
-        response.should be_success
+        get 'new' , {:customer_id => @cust.id}
+        expect(response).to be_success
       end
       
     end
@@ -84,10 +83,9 @@ module MultiItemContractx
         :sql_code => "")
         session[:employee] = true
         session[:user_id] = @u.id
-        session[:user_privilege] = Authentify::UserPrivilegeHelper::UserPrivilege.new(@u.id)
         qs = FactoryGirl.attributes_for(:multi_item_contractx_contract, :customer_id => @cust.id)
-        get 'create' , {:use_route => :multi_item_contractx,  :contract => qs, :customer_id => @cust.id}
-        response.should redirect_to URI.escape(SUBURI + "/authentify/view_handler?index=0&msg=Successfully Saved!")
+        get 'create' , { :contract => qs, :customer_id => @cust.id}
+        expect(response).to redirect_to URI.escape(SUBURI + "/authentify/view_handler?index=0&msg=Successfully Saved!")
       end
       
       it "should render 'new' if data error" do
@@ -97,10 +95,9 @@ module MultiItemContractx
         :sql_code => "")
         session[:employee] = true
         session[:user_id] = @u.id
-        session[:user_privilege] = Authentify::UserPrivilegeHelper::UserPrivilege.new(@u.id)
         qs = FactoryGirl.attributes_for(:multi_item_contractx_contract, :contract_total => nil)
-        get 'create' , {:use_route => :multi_item_contractx, :customer_id => @cust.id, :contract => qs}
-        response.should render_template("new")
+        get 'create' , {:customer_id => @cust.id, :contract => qs}
+        expect(response).to render_template("new")
       end
     end
   
@@ -111,10 +108,9 @@ module MultiItemContractx
         :sql_code => "")
         session[:employee] = true
         session[:user_id] = @u.id
-        session[:user_privilege] = Authentify::UserPrivilegeHelper::UserPrivilege.new(@u.id)
         qs = FactoryGirl.create(:multi_item_contractx_contract, :customer_id => @cust.id)
-        get 'edit' , {:use_route => :multi_item_contractx, :customer_id => @cust.id, :id => qs.id}
-        response.should be_success
+        get 'edit' , {:customer_id => @cust.id, :id => qs.id}
+        expect(response).to be_success
       end
       
     end
@@ -126,10 +122,9 @@ module MultiItemContractx
         :sql_code => "")
         session[:employee] = true
         session[:user_id] = @u.id
-        session[:user_privilege] = Authentify::UserPrivilegeHelper::UserPrivilege.new(@u.id)
         qs = FactoryGirl.create(:multi_item_contractx_contract)
-        get 'update' , {:use_route => :multi_item_contractx, :customer_id => @cust.id, :id => qs.id, :contract => {:contract_on_file => true}}
-        response.should redirect_to URI.escape(SUBURI + "/authentify/view_handler?index=0&msg=Successfully Updated!")
+        get 'update' , {:customer_id => @cust.id, :id => qs.id, :contract => {:contract_on_file => true}}
+        expect(response).to redirect_to URI.escape(SUBURI + "/authentify/view_handler?index=0&msg=Successfully Updated!")
       end
       
       it "should render 'edit' if data error" do
@@ -137,10 +132,9 @@ module MultiItemContractx
         :sql_code => "")
         session[:employee] = true
         session[:user_id] = @u.id
-        session[:user_privilege] = Authentify::UserPrivilegeHelper::UserPrivilege.new(@u.id)
         qs = FactoryGirl.create(:multi_item_contractx_contract)
-        get 'update' , {:use_route => :multi_item_contractx, :customer_id => @cust.id, :id => qs.id, :contract => {:contract_total => nil}}
-        response.should render_template("edit")
+        get 'update' , {:customer_id => @cust.id, :id => qs.id, :contract => {:contract_total => nil}}
+        expect(response).to render_template("edit")
       end
     end
   
@@ -151,12 +145,11 @@ module MultiItemContractx
         :sql_code => "")
         session[:employee] = true
         session[:user_id] = @u.id
-        session[:user_privilege] = Authentify::UserPrivilegeHelper::UserPrivilege.new(@u.id)
         o = FactoryGirl.create(:ad_resource_orderx_order, :customer_po => 'new new')
         ci = FactoryGirl.create(:multi_item_contractx_contract_item, :contract_item_id => o.id)
         qs = FactoryGirl.create(:multi_item_contractx_contract, :contract_items => [ci], :customer_id => @cust.id)
-        get 'show' , {:use_route => :multi_item_contractx, :customer_id => @cust.id, :id => qs.id}
-        response.should be_success
+        get 'show' , {:customer_id => @cust.id, :id => qs.id}
+        expect(response).to be_success
       end
     end
   

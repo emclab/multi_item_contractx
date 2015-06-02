@@ -1,6 +1,7 @@
 module MultiItemContractx
   class Contract < ActiveRecord::Base
     attr_accessor :void_noupdate, :last_updated_by_name, :submited_by_name, :signed_by_name, :signed_noupdate, :contract_on_file_noupdate, :sales_name
+=begin
     attr_accessible :name, :contract_date, :contract_num, :contract_on_file, :contract_info, :contract_total, :customer_id, :customer_signed_by, :sales_id, :tax, :customer_po,
                     :other_charge, :paid_out, :payment_agreement, :payment_term, :sign_date, :signed, :signed_by_id, :void, :contract_items_attributes, :wf_state, 
                     :customer_name_autocomplete, :executed_contract_total,
@@ -17,7 +18,7 @@ module MultiItemContractx
     attr_accessible :start_date_s, :end_date_s, :customer_id_s, :zone_id_s, :paid_out_s, :sales_id_s, :payment_agreement_s, :contract_num_s, :customer_po_s,
                   :signed_s, :signed_by_id_s, :sign_date_s, :sales_id_s, :contract_on_file_s, :time_frame_s, :wf_state_s, :item_id_s, :name_s,
                   :as => :role_search_stats
-                                  
+=end                                  
     belongs_to :customer, :class_name => MultiItemContractx.customer_class.to_s
     belongs_to :signed_by, :class_name => 'Authentify::User'
     belongs_to :sales, :class_name => 'Authentify::User'
